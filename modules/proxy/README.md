@@ -13,6 +13,46 @@ This module creates an AWS RDS Proxy for connection pooling and improved databas
 - Configurable connection pool settings
 - Support for both RDS instances and Aurora clusters
 
+## Security
+
+### Security Controls
+
+This module implements security controls based on AWS Security Hub standards (FSBP, CIS, NIST 800-53, NIST 800-171, PCI DSS):
+
+### Implemented Controls
+
+- [x] Encryption in transit (TLS 1.2+ required by default)
+- [x] CloudWatch Logs with 365-day retention
+- [x] IAM role with least privilege (Secrets Manager access only)
+- [x] Private subnet deployment (minimum 2 for HA)
+- [x] KMS encryption for CloudWatch Logs
+- [x] Security control override system with audit justification
+
+### Security Control Overrides
+
+The module supports selective disabling of security controls with documented justification:
+
+```hcl
+security_control_overrides = {
+  disable_kms_requirement = true
+  justification           = "Development environment with IAM-only authentication"
+}
+```
+
+See [aws-security-standards.md](../../../../.kiro/steering/aws/aws-security-standards.md) for full security standards documentation.
+
+### Environment-Based Security Controls
+
+Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles) module's security profiles:
+
+| Control | Dev | Staging | Prod |
+|---------|-----|---------|------|
+| KMS encryption at rest | Optional | Required | Required |
+| IAM authentication | Optional | Recommended | Required |
+| Connection pooling | Recommended | Required | Required |
+| TLS enforcement | Required | Required | Required |
+
+For full details on security profiles and how controls vary by environment, see the [Security Profiles](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles) documentation.
 ## Usage
 
 ### Basic Example (RDS Instance)
@@ -117,32 +157,6 @@ module "rds_proxy_iam" {
 }
 ```
 
-## Security Controls
-
-This module implements security controls based on AWS Security Hub standards (FSBP, CIS, NIST 800-53, NIST 800-171, PCI DSS):
-
-### Implemented Controls
-
-- [x] Encryption in transit (TLS 1.2+ required by default)
-- [x] CloudWatch Logs with 365-day retention
-- [x] IAM role with least privilege (Secrets Manager access only)
-- [x] Private subnet deployment (minimum 2 for HA)
-- [x] KMS encryption for CloudWatch Logs
-- [x] Security control override system with audit justification
-
-### Security Control Overrides
-
-The module supports selective disabling of security controls with documented justification:
-
-```hcl
-security_control_overrides = {
-  disable_kms_requirement = true
-  justification           = "Development environment with IAM-only authentication"
-}
-```
-
-See [aws-security-standards.md](../../../../.kiro/steering/aws/aws-security-standards.md) for full security standards documentation.
-
 ## Connection Pooling Benefits
 
 RDS Proxy provides several benefits:
@@ -215,25 +229,7 @@ resource "aws_lambda_function" "app" {
 }
 ```
 
-## License
-
-Apache 2.0 Licensed. See [LICENSE](../../../../LICENSE) for full details.
-
-## Environment-Based Security Controls
-
-Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles){:target="_blank"} module's security profiles:
-
-| Control | Dev | Staging | Prod |
-|---------|-----|---------|------|
-| KMS encryption at rest | Optional | Required | Required |
-| IAM authentication | Optional | Recommended | Required |
-| Connection pooling | Recommended | Required | Required |
-| TLS enforcement | Required | Required | Required |
-
-For full details on security profiles and how controls vary by environment, see the <a href="https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles" target="_blank">Security Profiles</a> documentation.
-
 <!-- BEGIN_TF_DOCS -->
-
 
 ## Usage
 
@@ -352,7 +348,3 @@ module "rds_proxy" {
 
 See [example/](example/) for a complete working example with all features.
 
-## License
-
-MIT Licensed. See [LICENSE](LICENSE) for full details.
-<!-- END_TF_DOCS -->

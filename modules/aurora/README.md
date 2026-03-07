@@ -4,13 +4,27 @@ Production-ready AWS Aurora PostgreSQL Serverless v2 module with comprehensive s
 
 ## Table of Contents
 
-- [Security Controls](#security-controls)
+- [Security](#security)
 - [Features](#features)
 - [Usage Examples](#usage-examples)
 - [Requirements](#requirements)
 - [Examples](#examples)
 
-## Security Controls
+## Features
+
+- **Serverless v2 Scaling**: Automatic capacity scaling from 0.5 to 128 ACU
+- **KMS Encryption**: Customer-managed key encryption at rest
+- **Automated Backups**: Configurable retention period (1-35 days)
+- **Performance Insights**: Query performance monitoring and analysis
+- **Enhanced Monitoring**: CloudWatch Logs integration for PostgreSQL logs
+- **Multi-AZ Support**: High availability across multiple availability zones
+- **Deletion Protection**: Optional protection against accidental deletion
+- **IAM Integration**: Enhanced monitoring IAM role with least privilege
+- **Consistent Naming**: Integration with metadata module for standardized resource naming
+
+## Security
+
+### Security Controls
 
 This module implements security controls based on the metadata module's security policy. Controls can be selectively overridden with documented business justification.
 
@@ -48,18 +62,20 @@ security_control_overrides = {
 4. **Audit Trail**: All overrides require `justification` field for compliance
 5. **Review Cycle**: Quarterly review of all active overrides
 
-## Features
+### Environment-Based Security Controls
 
-- **Serverless v2 Scaling**: Automatic capacity scaling from 0.5 to 128 ACU
-- **KMS Encryption**: Customer-managed key encryption at rest
-- **Automated Backups**: Configurable retention period (1-35 days)
-- **Performance Insights**: Query performance monitoring and analysis
-- **Enhanced Monitoring**: CloudWatch Logs integration for PostgreSQL logs
-- **Multi-AZ Support**: High availability across multiple availability zones
-- **Deletion Protection**: Optional protection against accidental deletion
-- **IAM Integration**: Enhanced monitoring IAM role with least privilege
-- **Consistent Naming**: Integration with metadata module for standardized resource naming
+Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles) module's security profiles:
 
+| Control | Dev | Staging | Prod |
+|---------|-----|---------|------|
+| KMS encryption at rest | Optional | Required | Required |
+| Automated backups | Optional | Required | Required |
+| Performance Insights | Optional | Enabled | Enabled |
+| Multi-AZ | Disabled | Enabled | Enabled |
+| Deletion protection | Disabled | Enabled | Enabled |
+| Enhanced monitoring | Optional | Recommended | Required |
+
+For full details on security profiles and how controls vary by environment, see the [Security Profiles](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles) documentation.
 ## Usage Examples
 
 ### Example 1: Basic Aurora Cluster with Security Controls
@@ -263,23 +279,7 @@ module "aurora" {
 }
 ```
 
-## Environment-Based Security Controls
-
-Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles){:target="_blank"} module's security profiles:
-
-| Control | Dev | Staging | Prod |
-|---------|-----|---------|------|
-| KMS encryption at rest | Optional | Required | Required |
-| Automated backups | Optional | Required | Required |
-| Performance Insights | Optional | Enabled | Enabled |
-| Multi-AZ | Disabled | Enabled | Enabled |
-| Deletion protection | Disabled | Enabled | Enabled |
-| Enhanced monitoring | Optional | Recommended | Required |
-
-For full details on security profiles and how controls vary by environment, see the <a href="https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles" target="_blank">Security Profiles</a> documentation.
-
 <!-- BEGIN_TF_DOCS -->
-
 
 ## Usage
 
@@ -406,15 +406,6 @@ module "aurora" {
 | <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of Aurora instance endpoints |
 | <a name="output_instance_ids"></a> [instance\_ids](#output\_instance\_ids) | List of Aurora instance IDs |
 | <a name="output_tags"></a> [tags](#output\_tags) | Tags applied to the Aurora cluster |
-
-## Example
-
-See [example/](example/) for a complete working example with all features.
-
-## License
-
-MIT Licensed. See [LICENSE](LICENSE) for full details.
-<!-- END_TF_DOCS -->
 
 ## Examples
 
