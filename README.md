@@ -66,8 +66,7 @@ For full details on security profiles and how controls vary by environment, see 
 
 ```hcl
 module "aurora" {
-  source = "path/to/terraform-aws-rds/modules/aurora"
-
+  source = "github.com/islamelkadi/terraform-aws-rds"
   namespace   = "example"
   environment = "prod"
   name        = "corporate-actions"

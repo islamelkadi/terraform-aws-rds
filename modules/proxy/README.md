@@ -59,7 +59,7 @@ For full details on security profiles and how controls vary by environment, see 
 
 ```hcl
 module "rds_proxy" {
-  source = "../../modules/terraform-aws-rds/modules/proxy"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
 
   namespace   = "myorg"
   environment = "prod"
@@ -90,7 +90,7 @@ module "rds_proxy" {
 
 ```hcl
 module "aurora_proxy" {
-  source = "../../modules/terraform-aws-rds/modules/proxy"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
 
   namespace   = "myorg"
   environment = "prod"
@@ -129,7 +129,7 @@ module "aurora_proxy" {
 
 ```hcl
 module "rds_proxy_iam" {
-  source = "../../modules/terraform-aws-rds/modules/proxy"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
 
   namespace   = "myorg"
   environment = "prod"
@@ -193,7 +193,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
 
 # Create RDS Proxy
 module "rds_proxy" {
-  source = "../../modules/terraform-aws-rds/modules/proxy"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
 
   namespace   = var.namespace
   environment = var.environment
@@ -237,7 +237,7 @@ resource "aws_lambda_function" "app" {
 # Basic RDS Proxy Example
 
 module "rds_proxy" {
-  source = "../"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
 
   namespace   = var.namespace
   environment = var.environment

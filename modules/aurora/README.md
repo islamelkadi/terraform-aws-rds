@@ -287,7 +287,7 @@ module "aurora" {
 # Basic Aurora PostgreSQL Example
 
 module "aurora" {
-  source = "../"
+  source = "github.com/islamelkadi/terraform-aws-rds//modules/aurora"
 
   namespace   = var.namespace
   environment = var.environment
