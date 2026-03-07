@@ -11,7 +11,6 @@ Reusable Terraform module for AWS RDS with Aurora Serverless v2 and RDS Proxy su
 - [Module Structure](#module-structure)
 - [Requirements](#requirements)
 - [MCP Servers](#mcp-servers)
-- [License](#license)
 
 ## Prerequisites
 
@@ -157,7 +156,3 @@ No inputs.
 
 No outputs.
 
-## License
-
-MIT Licensed. See [LICENSE](LICENSE) for full details.
-<!-- END_TF_DOCS -->
