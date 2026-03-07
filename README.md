@@ -2,6 +2,17 @@
 
 Reusable Terraform module for AWS RDS with Aurora Serverless v2 and RDS Proxy submodules.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Security](#security)
+- [Submodules](#submodules)
+- [Usage](#usage)
+- [Module Structure](#module-structure)
+- [Requirements](#requirements)
+- [MCP Servers](#mcp-servers)
+- [License](#license)
+
 ## Prerequisites
 
 This module is designed for macOS. The following must already be installed on your machine:
@@ -16,6 +27,34 @@ make bootstrap
 ```
 
 This will install/upgrade: tfenv, Terraform (via tfenv), tflint, terraform-docs, checkov, and pre-commit.
+
+## Security
+
+### Security Controls
+
+Implements controls for FSBP, CIS, NIST 800-53/171, and PCI DSS v4.0:
+
+- Encryption at rest with KMS customer-managed keys
+- Automated encrypted backups with configurable retention
+- Performance Insights and enhanced monitoring
+- Multi-AZ high availability
+- Deletion protection
+- Security control overrides with audit justification
+
+### Environment-Based Security Controls
+
+Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles){:target="_blank"} module's security profiles:
+
+| Control | Dev | Staging | Prod |
+|---------|-----|---------|------|
+| KMS encryption at rest | Optional | Required | Required |
+| Automated backups | Optional | Required | Required |
+| Performance Insights | Optional | Enabled | Enabled |
+| Multi-AZ | Disabled | Enabled | Enabled |
+| Deletion protection | Disabled | Enabled | Enabled |
+| Enhanced monitoring | Optional | Recommended | Required |
+
+For full details on security profiles and how controls vary by environment, see the <a href="https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles" target="_blank">Security Profiles</a> documentation.
 
 ## Submodules
 
@@ -51,17 +90,6 @@ module "aurora" {
 }
 ```
 
-## Security Controls
-
-Implements controls for FSBP, CIS, NIST 800-53/171, and PCI DSS v4.0:
-
-- Encryption at rest with KMS customer-managed keys
-- Automated encrypted backups with configurable retention
-- Performance Insights and enhanced monitoring
-- Multi-AZ high availability
-- Deletion protection
-- Security control overrides with audit justification
-
 ## Module Structure
 
 ```
@@ -90,21 +118,6 @@ terraform-aws-rds/
 |------|---------|
 | terraform | >= 1.14.3 |
 | aws | >= 6.34 |
-
-## Environment-Based Security Controls
-
-Security controls are automatically applied based on the environment through the [terraform-aws-metadata](https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles){:target="_blank"} module's security profiles:
-
-| Control | Dev | Staging | Prod |
-|---------|-----|---------|------|
-| KMS encryption at rest | Optional | Required | Required |
-| Automated backups | Optional | Required | Required |
-| Performance Insights | Optional | Enabled | Enabled |
-| Multi-AZ | Disabled | Enabled | Enabled |
-| Deletion protection | Disabled | Enabled | Enabled |
-| Enhanced monitoring | Optional | Recommended | Required |
-
-For full details on security profiles and how controls vary by environment, see the <a href="https://github.com/islamelkadi/terraform-aws-metadata?tab=readme-ov-file#security-profiles" target="_blank">Security Profiles</a> documentation.
 
 ## MCP Servers
 
