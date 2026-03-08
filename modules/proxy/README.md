@@ -231,13 +231,18 @@ resource "aws_lambda_function" "app" {
 
 <!-- BEGIN_TF_DOCS -->
 
+
 ## Usage
 
 ```hcl
+# Primary Module Example - This demonstrates the terraform-aws-rds proxy module
+# Supporting infrastructure (KMS, VPC) is defined in separate files
+# to keep this example focused on the module's core functionality.
+#
 # Basic RDS Proxy Example
 
 module "rds_proxy" {
-  source = "github.com/islamelkadi/terraform-aws-rds//modules/proxy"
+  source = "../"
 
   namespace   = var.namespace
   environment = var.environment
@@ -245,7 +250,9 @@ module "rds_proxy" {
   region      = var.region
 
   engine_family = var.engine_family
-  subnet_ids    = var.subnet_ids
+
+  # Direct reference to vpc.tf module output
+  subnet_ids = module.vpc.private_subnet_ids
 
   auth = [{
     auth_scheme = "SECRETS"
@@ -255,7 +262,9 @@ module "rds_proxy" {
   }]
 
   db_instance_identifier = var.db_instance_identifier
-  kms_key_id             = var.kms_key_arn
+
+  # Direct reference to kms.tf module output
+  kms_key_id = module.kms_key.key_id
 
   connection_pool_config = {
     connection_borrow_timeout    = 120
@@ -288,7 +297,7 @@ module "rds_proxy" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_metadata"></a> [metadata](#module\_metadata) | github.com/islamelkadi/terraform-aws-metadata | v1.1.0 |
+| <a name="module_metadata"></a> [metadata](#module\_metadata) | github.com/islamelkadi/terraform-aws-metadata | v1.0.0 |
 
 ## Resources
 
@@ -348,3 +357,7 @@ module "rds_proxy" {
 
 See [example/](example/) for a complete working example with all features.
 
+## License
+
+MIT Licensed. See [LICENSE](LICENSE) for full details.
+<!-- END_TF_DOCS -->

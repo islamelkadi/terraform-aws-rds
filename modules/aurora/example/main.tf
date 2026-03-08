@@ -1,3 +1,7 @@
+# Primary Module Example - This demonstrates the terraform-aws-rds Aurora module
+# Supporting infrastructure (KMS, VPC) is defined in separate files
+# to keep this example focused on the module's core functionality.
+#
 # Basic Aurora PostgreSQL Example
 
 module "aurora" {
@@ -12,10 +16,12 @@ module "aurora" {
   master_username = var.master_username
   master_password = var.master_password
 
-  subnet_ids             = var.subnet_ids
-  vpc_security_group_ids = var.vpc_security_group_ids
+  # Direct reference to vpc.tf module outputs
+  subnet_ids             = module.vpc.private_subnet_ids
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
-  kms_key_arn = var.kms_key_arn
+  # Direct reference to kms.tf module output
+  kms_key_arn = module.kms_key.key_arn
 
   min_capacity = var.min_capacity
   max_capacity = var.max_capacity

@@ -281,13 +281,18 @@ module "aurora" {
 
 <!-- BEGIN_TF_DOCS -->
 
+
 ## Usage
 
 ```hcl
+# Primary Module Example - This demonstrates the terraform-aws-rds Aurora module
+# Supporting infrastructure (KMS, VPC) is defined in separate files
+# to keep this example focused on the module's core functionality.
+#
 # Basic Aurora PostgreSQL Example
 
 module "aurora" {
-  source = "github.com/islamelkadi/terraform-aws-rds//modules/aurora"
+  source = "../"
 
   namespace   = var.namespace
   environment = var.environment
@@ -298,10 +303,12 @@ module "aurora" {
   master_username = var.master_username
   master_password = var.master_password
 
-  subnet_ids             = var.subnet_ids
-  vpc_security_group_ids = var.vpc_security_group_ids
+  # Direct reference to vpc.tf module outputs
+  subnet_ids             = module.vpc.private_subnet_ids
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
-  kms_key_arn = var.kms_key_arn
+  # Direct reference to kms.tf module output
+  kms_key_arn = module.kms_key.key_arn
 
   min_capacity = var.min_capacity
   max_capacity = var.max_capacity
@@ -341,7 +348,7 @@ module "aurora" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_metadata"></a> [metadata](#module\_metadata) | github.com/islamelkadi/terraform-aws-metadata | v1.1.0 |
+| <a name="module_metadata"></a> [metadata](#module\_metadata) | github.com/islamelkadi/terraform-aws-metadata | v1.0.0 |
 
 ## Resources
 
@@ -407,7 +414,11 @@ module "aurora" {
 | <a name="output_instance_ids"></a> [instance\_ids](#output\_instance\_ids) | List of Aurora instance IDs |
 | <a name="output_tags"></a> [tags](#output\_tags) | Tags applied to the Aurora cluster |
 
-## Examples
+## Example
 
-See [example/](example/) for a complete working example.
+See [example/](example/) for a complete working example with all features.
 
+## License
+
+MIT Licensed. See [LICENSE](LICENSE) for full details.
+<!-- END_TF_DOCS -->
