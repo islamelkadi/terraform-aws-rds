@@ -37,3 +37,7 @@ skip-check:
   # RDS Multi-AZ - Optional high availability feature
   - id: CKV_AWS_157
     comment: "Multi-AZ deployment adds cost. Users should enable based on their availability requirements."
+  
+  # Terraform Module Sources - Using semantic versioning tags (commit hash)
+  - id: CKV_TF_1
+    comment: "Using semantic version tags (?ref=v1.0.0) instead of commit hashes for better maintainability and readability."
