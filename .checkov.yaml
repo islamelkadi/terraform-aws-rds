@@ -1,44 +1,30 @@
 # Checkov configuration for terraform-aws-rds
 # Suppressions for checks that are not applicable to example/demo code
 
-
 skip-check:
   # KMS IAM Policy - Intentional for flexible key policies in examples
-  - id: CKV_AWS_111
-    comment: "KMS module uses flexible IAM policies for demonstration purposes. Users should customize based on their security requirements."
-  - id: CKV_AWS_356
-    comment: "KMS module uses wildcard resources for flexibility in examples. Users should restrict in production."
-  - id: CKV_AWS_109
-    comment: "KMS module IAM policies are intentionally permissive for examples. Users should apply least privilege in production."
+  - CKV_AWS_111  # KMS module uses flexible IAM policies for demonstration purposes
+  - CKV_AWS_356  # KMS module uses wildcard resources for flexibility in examples
+  - CKV_AWS_109  # KMS module IAM policies are intentionally permissive for examples
   
   # Terraform Module Sources - Using semantic versioning tags
-  - id: CKV_TF_2
-    comment: "Using semantic version tags (?ref=v1.0.0) which is a valid versioning strategy for stable releases."
+  - CKV_TF_1  # Using semantic version tags (?ref=v1.0.0) instead of commit hashes
+  - CKV_TF_2  # Using semantic version tags (?ref=v1.0.0) which is a valid versioning strategy
   
   # VPC Public Subnet - Intentional design
-  - id: CKV_AWS_130
-    comment: "Public subnets are designed to auto-assign public IPs for resources that need internet access. This is intentional."
+  - CKV_AWS_130  # Public subnets are designed to auto-assign public IPs for resources that need internet access
   
   # RDS Copy Tags to Snapshots - Optional feature
-  - id: CKV_AWS_313
-    comment: "Copying tags to snapshots is optional. Users should enable based on their tagging requirements."
+  - CKV_AWS_313  # Copying tags to snapshots is optional
   
   # RDS IAM Authentication - Optional security feature
-  - id: CKV_AWS_162
-    comment: "IAM authentication adds complexity and may not be suitable for all use cases. Users should enable based on their security requirements."
+  - CKV_AWS_162  # IAM authentication adds complexity and may not be suitable for all use cases
   
   # RDS Performance Insights - Optional monitoring feature
-  - id: CKV_AWS_353
-    comment: "Performance Insights adds cost. Users should enable based on their monitoring requirements."
+  - CKV_AWS_353  # Performance Insights adds cost
   
   # RDS Deletion Protection - Example code
-  - id: CKV_AWS_293
-    comment: "Deletion protection is disabled in examples for easier cleanup. Users should enable in production."
+  - CKV_AWS_293  # Deletion protection is disabled in examples for easier cleanup
   
   # RDS Multi-AZ - Optional high availability feature
-  - id: CKV_AWS_157
-    comment: "Multi-AZ deployment adds cost. Users should enable based on their availability requirements."
-  
-  # Terraform Module Sources - Using semantic versioning tags (commit hash)
-  - id: CKV_TF_1
-    comment: "Using semantic version tags (?ref=v1.0.0) instead of commit hashes for better maintainability and readability."
+  - CKV_AWS_157  # Multi-AZ deployment adds cost
