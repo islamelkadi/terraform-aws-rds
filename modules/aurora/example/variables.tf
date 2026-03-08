@@ -41,24 +41,6 @@ variable "master_password" {
   sensitive   = true
 }
 
-variable "subnet_ids" {
-  description = "List of private subnet IDs for Aurora"
-  type        = list(string)
-  default     = ["subnet-0a1b2c3d4e5f00001", "subnet-0a1b2c3d4e5f00002"]
-}
-
-variable "vpc_security_group_ids" {
-  description = "List of security group IDs for Aurora"
-  type        = list(string)
-  default     = ["sg-0a1b2c3d4e5f67890"]
-}
-
-variable "kms_key_arn" {
-  description = "ARN of KMS key for encryption"
-  type        = string
-  default     = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
-}
-
 variable "min_capacity" {
   description = "Minimum Aurora Serverless v2 capacity"
   type        = number

@@ -28,12 +28,6 @@ variable "engine_family" {
   default     = "POSTGRESQL"
 }
 
-variable "subnet_ids" {
-  description = "List of private subnet IDs for the proxy"
-  type        = list(string)
-  default     = ["subnet-0a1b2c3d4e5f00001", "subnet-0a1b2c3d4e5f00002"]
-}
-
 variable "secret_arn" {
   description = "ARN of the Secrets Manager secret for database credentials"
   type        = string
@@ -44,12 +38,6 @@ variable "db_instance_identifier" {
   description = "Identifier of the RDS instance"
   type        = string
   default     = "my-rds-instance"
-}
-
-variable "kms_key_arn" {
-  description = "ARN of KMS key for encryption"
-  type        = string
-  default     = "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
 }
 
 variable "enable_iam_auth" {
