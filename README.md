@@ -1,5 +1,9 @@
 # Terraform AWS RDS Module
 
+[![Terraform Security](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-security.yaml/badge.svg)](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-security.yaml)
+[![Terraform Lint & Validation](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-lint.yaml/badge.svg)](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-lint.yaml)
+[![Terraform Docs](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-docs.yaml/badge.svg)](https://github.com/islamelkadi/terraform-aws-rds/actions/workflows/terraform-docs.yaml)
+
 Reusable Terraform module for AWS RDS with Aurora Serverless v2 and RDS Proxy submodules.
 
 ## Table of Contents
