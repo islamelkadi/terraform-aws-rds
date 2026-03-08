@@ -1,3 +1,7 @@
+# Primary Module Example - This demonstrates the terraform-aws-rds proxy module
+# Supporting infrastructure (KMS, VPC) is defined in separate files
+# to keep this example focused on the module's core functionality.
+#
 # Basic RDS Proxy Example
 
 module "rds_proxy" {
@@ -9,7 +13,9 @@ module "rds_proxy" {
   region      = var.region
 
   engine_family = var.engine_family
-  subnet_ids    = var.subnet_ids
+  
+  # Direct reference to vpc.tf module output
+  subnet_ids = module.vpc.private_subnet_ids
 
   auth = [{
     auth_scheme = "SECRETS"
@@ -19,7 +25,9 @@ module "rds_proxy" {
   }]
 
   db_instance_identifier = var.db_instance_identifier
-  kms_key_id             = var.kms_key_arn
+  
+  # Direct reference to kms.tf module output
+  kms_key_id = module.kms_key.key_id
 
   connection_pool_config = {
     connection_borrow_timeout    = 120

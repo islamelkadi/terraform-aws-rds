@@ -1,0 +1,34 @@
+# Supporting Infrastructure - Real VPC resources for testing
+# This infrastructure is created from remote GitHub modules to provide
+# realistic networking dependencies for the primary module example.
+# 
+# Available module outputs (reference directly in main.tf):
+# - module.vpc.vpc_id
+# - module.vpc.private_subnet_ids
+# - module.vpc.public_subnet_ids
+# - module.vpc.default_security_group_id
+#
+# Example usage in main.tf:
+#   subnet_ids = module.vpc.private_subnet_ids
+
+module "vpc" {
+  source = "git::https://github.com/islamelkadi/terraform-aws-vpc.git//modules/vpc"
+
+  namespace   = var.namespace
+  environment = var.environment
+  name        = "example-vpc"
+  region      = var.region
+
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  availability_zones = ["${var.region}a", "${var.region}b"]
+  
+  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+
+  tags = {
+    Purpose = "example-supporting-infrastructure"
+  }
+}
