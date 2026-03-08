@@ -13,7 +13,7 @@ module "rds_proxy" {
   region      = var.region
 
   engine_family = var.engine_family
-  
+
   # Direct reference to vpc.tf module output
   subnet_ids = module.vpc.private_subnet_ids
 
@@ -25,7 +25,7 @@ module "rds_proxy" {
   }]
 
   db_instance_identifier = var.db_instance_identifier
-  
+
   # Direct reference to kms.tf module output
   kms_key_id = module.kms_key.key_id
 
