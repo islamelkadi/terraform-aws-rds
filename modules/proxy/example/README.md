@@ -60,13 +60,11 @@ No resources.
 | <a name="input_enable_iam_auth"></a> [enable\_iam\_auth](#input\_enable\_iam\_auth) | Enable IAM authentication | `bool` | `false` | no |
 | <a name="input_engine_family"></a> [engine\_family](#input\_engine\_family) | Database engine family (MYSQL, POSTGRESQL, SQLSERVER) | `string` | `"POSTGRESQL"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name | `string` | `"dev"` | no |
-| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | ARN of KMS key for encryption | `string` | `"arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"` | no |
 | <a name="input_log_retention_days"></a> [log\_retention\_days](#input\_log\_retention\_days) | CloudWatch Logs retention in days | `number` | `7` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for the RDS Proxy | `string` | `"rds-proxy"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace (organization/team name) | `string` | `"example"` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | `"us-east-1"` | no |
 | <a name="input_secret_arn"></a> [secret\_arn](#input\_secret\_arn) | ARN of the Secrets Manager secret for database credentials | `string` | `"arn:aws:secretsmanager:us-east-1:123456789012:secret:db-credentials-AbCdEf"` | no |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of private subnet IDs for the proxy | `list(string)` | <pre>[<br/>  "subnet-0a1b2c3d4e5f00001",<br/>  "subnet-0a1b2c3d4e5f00002"<br/>]</pre> | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags | `map(string)` | <pre>{<br/>  "Example": "RDS_PROXY"<br/>}</pre> | no |
 
 ## Outputs

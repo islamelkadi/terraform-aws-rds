@@ -33,12 +33,16 @@ This will install/upgrade: tfenv, Terraform (via tfenv), tflint, terraform-docs,
 
 Implements controls for FSBP, CIS, NIST 800-53/171, and PCI DSS v4.0:
 
-- Encryption at rest with KMS customer-managed keys
-- Automated encrypted backups with configurable retention
-- Performance Insights and enhanced monitoring
-- Multi-AZ high availability
-- Deletion protection
-- Security control overrides with audit justification
+- **Encryption at rest** with KMS customer-managed keys
+- **IAM database authentication** enabled by default for passwordless access
+- **Automated encrypted backups** with configurable retention
+- **Auto minor version upgrades** enabled by default for security patches
+- **Multi-AZ high availability** with 2 instances by default
+- **Performance Insights and enhanced monitoring** enabled
+- **Private subnet deployment** with validation
+- **Deletion protection** enabled by default (configurable)
+- **CloudWatch log retention** with environment-based validation (365 days default)
+- **Security control overrides** with audit justification
 
 ### Environment-Based Security Controls
 
@@ -47,6 +51,12 @@ Security controls are automatically applied based on the environment through the
 | Control | Dev | Staging | Prod |
 |---------|-----|---------|------|
 | KMS encryption at rest | Optional | Required | Required |
+| IAM database authentication | Enabled | Enabled | Enabled |
+| Auto minor version upgrades | Enabled | Enabled | Enabled |
+| Multi-AZ deployment | 2 instances | 2 instances | 2 instances |
+| Deletion protection | Configurable | Required | Required |
+| CloudWatch log retention | 365 days | 365 days | 365 days |
+| Private subnet deployment | Validated | Validated | Validated |
 | Automated backups | Optional | Required | Required |
 | Performance Insights | Optional | Enabled | Enabled |
 | Multi-AZ | Disabled | Enabled | Enabled |

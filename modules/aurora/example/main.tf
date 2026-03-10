@@ -36,7 +36,11 @@ module "aurora" {
   monitoring_interval             = var.monitoring_interval
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
 
-  deletion_protection = var.deletion_protection
+  # Security and compliance settings
+  enable_iam_database_authentication = var.enable_iam_database_authentication
+  auto_minor_version_upgrade          = var.auto_minor_version_upgrade
+  log_retention_days                  = var.log_retention_days
+  deletion_protection                 = var.deletion_protection
   skip_final_snapshot = var.skip_final_snapshot
   apply_immediately   = var.apply_immediately
 

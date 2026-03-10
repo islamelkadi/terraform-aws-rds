@@ -24,6 +24,17 @@ Production-ready AWS Aurora PostgreSQL Serverless v2 module with comprehensive s
 
 ## Security
 
+### Security Improvements
+
+This module now implements enhanced security by default:
+
+- ✅ **IAM Database Authentication**: Enabled by default for passwordless access
+- ✅ **Auto Minor Version Upgrades**: Enabled by default for automatic security patches
+- ✅ **Multi-AZ Deployment**: 2 instances by default for high availability
+- ✅ **Private Subnet Validation**: Ensures RDS is never deployed in public subnets
+- ✅ **CloudWatch Log Retention**: 365 days by default with environment-based validation
+- ✅ **Deletion Protection**: Enabled by default (true) for production safety
+
 ### Security Controls
 
 This module implements security controls based on the metadata module's security policy. Controls can be selectively overridden with documented business justification.
@@ -282,55 +293,6 @@ module "aurora" {
 <!-- BEGIN_TF_DOCS -->
 
 
-## Usage
-
-```hcl
-# Primary Module Example - This demonstrates the terraform-aws-rds Aurora module
-# Supporting infrastructure (KMS, VPC) is defined in separate files
-# to keep this example focused on the module's core functionality.
-#
-# Basic Aurora PostgreSQL Example
-
-module "aurora" {
-  source = "../"
-
-  namespace   = var.namespace
-  environment = var.environment
-  name        = var.name
-  region      = var.region
-
-  database_name   = var.database_name
-  master_username = var.master_username
-  master_password = var.master_password
-
-  # Direct reference to vpc.tf module outputs
-  subnet_ids             = module.vpc.private_subnet_ids
-  vpc_security_group_ids = [module.security_group.security_group_id]
-
-  # Direct reference to kms.tf module output
-  kms_key_arn = module.kms_key.key_arn
-
-  min_capacity = var.min_capacity
-  max_capacity = var.max_capacity
-
-  backup_retention_period      = var.backup_retention_period
-  preferred_backup_window      = var.preferred_backup_window
-  preferred_maintenance_window = var.preferred_maintenance_window
-
-  instance_count = var.instance_count
-
-  enable_performance_insights     = var.enable_performance_insights
-  monitoring_interval             = var.monitoring_interval
-  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-
-  deletion_protection = var.deletion_protection
-  skip_final_snapshot = var.skip_final_snapshot
-  apply_immediately   = var.apply_immediately
-
-  tags = var.tags
-}
-```
-
 ## Requirements
 
 | Name | Version |
@@ -354,29 +316,33 @@ module "aurora" {
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_log_group.aurora_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_db_subnet_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) | resource |
 | [aws_iam_role.rds_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.rds_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_rds_cluster.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) | resource |
 | [aws_rds_cluster_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance) | resource |
 | [aws_iam_policy_document.rds_monitoring_assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_subnet.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_apply_immediately"></a> [apply\_immediately](#input\_apply\_immediately) | Apply changes immediately instead of during maintenance window | `bool` | `false` | no |
+| <a name="input_auto_minor_version_upgrade"></a> [auto\_minor\_version\_upgrade](#input\_auto\_minor\_version\_upgrade) | Enable automatic minor version upgrades for security patches (recommended) | `bool` | `true` | no |
 | <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | Number of days to retain automated backups | `number` | `7` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | Name of the default database to create | `string` | n/a | yes |
-| <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enable deletion protection for the cluster | `bool` | `false` | no |
+| <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enable deletion protection for the cluster (required parameter - set based on environment needs) | `bool` | `true` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to use between name components | `string` | `"-"` | no |
-| <a name="input_enable_iam_database_authentication"></a> [enable\_iam\_database\_authentication](#input\_enable\_iam\_database\_authentication) | Enable IAM database authentication for passwordless access | `bool` | `false` | no |
+| <a name="input_enable_iam_database_authentication"></a> [enable\_iam\_database\_authentication](#input\_enable\_iam\_database\_authentication) | Enable IAM database authentication for passwordless access (recommended for security) | `bool` | `true` | no |
 | <a name="input_enable_performance_insights"></a> [enable\_performance\_insights](#input\_enable\_performance\_insights) | Enable Performance Insights | `bool` | `true` | no |
 | <a name="input_enabled_cloudwatch_logs_exports"></a> [enabled\_cloudwatch\_logs\_exports](#input\_enabled\_cloudwatch\_logs\_exports) | List of log types to export to CloudWatch (postgresql) | `list(string)` | <pre>[<br/>  "postgresql"<br/>]</pre> | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Aurora PostgreSQL engine version | `string` | `"15.4"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name (dev, staging, prod) | `string` | n/a | yes |
-| <a name="input_instance_count"></a> [instance\_count](#input\_instance\_count) | Number of Aurora instances to create | `number` | `1` | no |
+| <a name="input_instance_count"></a> [instance\_count](#input\_instance\_count) | Number of Aurora instances to create (minimum 2 for Multi-AZ high availability) | `number` | `2` | no |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | ARN of KMS key for cluster encryption | `string` | n/a | yes |
+| <a name="input_log_retention_days"></a> [log\_retention\_days](#input\_log\_retention\_days) | Number of days to retain CloudWatch logs (365 days recommended for production) | `number` | `365` | no |
 | <a name="input_master_password"></a> [master\_password](#input\_master\_password) | Master password for the database. Use AWS Secrets Manager in production. Not required when IAM authentication is enabled | `string` | `null` | no |
 | <a name="input_master_username"></a> [master\_username](#input\_master\_username) | Master username for the database | `string` | `"postgres"` | no |
 | <a name="input_max_capacity"></a> [max\_capacity](#input\_max\_capacity) | Maximum Aurora Capacity Units (ACU) | `number` | `2` | no |
@@ -413,10 +379,6 @@ module "aurora" {
 | <a name="output_instance_endpoints"></a> [instance\_endpoints](#output\_instance\_endpoints) | List of Aurora instance endpoints |
 | <a name="output_instance_ids"></a> [instance\_ids](#output\_instance\_ids) | List of Aurora instance IDs |
 | <a name="output_tags"></a> [tags](#output\_tags) | Tags applied to the Aurora cluster |
-
-## Example
-
-See [example/](example/) for a complete working example with all features.
 
 ## License
 

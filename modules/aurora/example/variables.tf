@@ -96,9 +96,27 @@ variable "enabled_cloudwatch_logs_exports" {
 }
 
 variable "deletion_protection" {
-  description = "Enable deletion protection"
+  description = "Enable deletion protection (required parameter)"
   type        = bool
-  default     = false
+  default     = false  # Set to false for example, but production should use true
+}
+
+variable "enable_iam_database_authentication" {
+  description = "Enable IAM database authentication"
+  type        = bool
+  default     = true
+}
+
+variable "auto_minor_version_upgrade" {
+  description = "Enable automatic minor version upgrades"
+  type        = bool
+  default     = true
+}
+
+variable "log_retention_days" {
+  description = "CloudWatch log retention in days"
+  type        = number
+  default     = 365
 }
 
 variable "skip_final_snapshot" {

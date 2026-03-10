@@ -76,6 +76,18 @@ locals {
 
   justification_provided = var.security_control_overrides.justification != ""
   override_audit_passed  = !local.has_overrides || local.justification_provided
+
+  # Validate log retention meets minimum requirements
+  log_retention_validation_passed = var.log_retention_days >= local.security_controls.logging.min_log_retention_days
+
+  # Validate subnets are private (no direct route to internet gateway)
+  private_subnets_required = local.security_controls.network.require_private_subnets
+  # Check if any subnet has map_public_ip_on_launch enabled (indicates public subnet)
+  public_subnets_detected = length([
+    for subnet_id, subnet in data.aws_subnet.selected : subnet_id
+    if subnet.map_public_ip_on_launch
+  ]) > 0
+  private_subnets_validation_passed = !local.private_subnets_required || !local.public_subnets_detected
 }
 
 # Security Controls Check Block
@@ -113,5 +125,15 @@ check "security_controls_compliance" {
   assert {
     condition     = local.override_audit_passed
     error_message = "Security control overrides detected but no justification provided. Please document the business reason in security_control_overrides.justification for audit compliance."
+  }
+
+  assert {
+    condition     = local.log_retention_validation_passed
+    error_message = "Security control violation: Log retention period (${var.log_retention_days} days) is below minimum requirement (${local.security_controls.logging.min_log_retention_days} days). Increase log_retention_days or override with justification."
+  }
+
+  assert {
+    condition     = local.private_subnets_validation_passed
+    error_message = "Security control violation: RDS clusters must be deployed in private subnets only. Detected public subnets in subnet_ids. Use private subnets that don't auto-assign public IPs."
   }
 }

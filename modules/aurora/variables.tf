@@ -65,9 +65,9 @@ variable "master_password" {
 }
 
 variable "enable_iam_database_authentication" {
-  description = "Enable IAM database authentication for passwordless access"
+  description = "Enable IAM database authentication for passwordless access (recommended for security)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 # Serverless v2 scaling configuration
@@ -141,14 +141,21 @@ variable "preferred_maintenance_window" {
 
 # Instance configuration
 variable "instance_count" {
-  description = "Number of Aurora instances to create"
+  description = "Number of Aurora instances to create (minimum 2 for Multi-AZ high availability)"
   type        = number
-  default     = 1
+  default     = 2
 
   validation {
     condition     = var.instance_count >= 1 && var.instance_count <= 15
     error_message = "Instance count must be between 1 and 15"
   }
+}
+
+# Auto minor version upgrades
+variable "auto_minor_version_upgrade" {
+  description = "Enable automatic minor version upgrades for security patches (recommended)"
+  type        = bool
+  default     = true
 }
 
 # Monitoring configuration
@@ -175,11 +182,25 @@ variable "enabled_cloudwatch_logs_exports" {
   default     = ["postgresql"]
 }
 
+# Log retention configuration
+variable "log_retention_days" {
+  description = "Number of days to retain CloudWatch logs (365 days recommended for production)"
+  type        = number
+  default     = 365
+
+  validation {
+    condition = contains([
+      1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653
+    ], var.log_retention_days)
+    error_message = "Log retention days must be a valid CloudWatch Logs retention period"
+  }
+}
+
 # Protection configuration
 variable "deletion_protection" {
-  description = "Enable deletion protection for the cluster"
+  description = "Enable deletion protection for the cluster (required parameter - set based on environment needs)"
   type        = bool
-  default     = false
+  default     = true  # Default to true for production safety
 }
 
 variable "skip_final_snapshot" {

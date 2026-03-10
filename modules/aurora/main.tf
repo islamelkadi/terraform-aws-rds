@@ -1,6 +1,12 @@
 # RDS Aurora PostgreSQL Module
 # Creates AWS RDS Aurora Serverless v2 cluster with encryption, automated backups, and security
 
+# Data source to validate subnet configuration
+data "aws_subnet" "selected" {
+  for_each = toset(var.subnet_ids)
+  id       = each.value
+}
+
 # DB Subnet Group
 resource "aws_db_subnet_group" "this" {
   name       = "${local.cluster_name}-subnet-group"
@@ -24,7 +30,7 @@ resource "aws_rds_cluster" "this" {
   master_username    = var.master_username
   master_password    = var.enable_iam_database_authentication ? null : var.master_password
 
-  # Enable IAM database authentication
+  # Enable IAM database authentication by default for enhanced security
   iam_database_authentication_enabled = var.enable_iam_database_authentication
 
   # Serverless v2 scaling configuration
@@ -62,6 +68,24 @@ resource "aws_rds_cluster" "this" {
   tags = local.tags
 }
 
+# CloudWatch Log Group for Aurora logs
+resource "aws_cloudwatch_log_group" "aurora_logs" {
+  for_each = toset(var.enabled_cloudwatch_logs_exports)
+
+  name              = "/aws/rds/cluster/${local.cluster_name}/${each.value}"
+  retention_in_days = var.log_retention_days
+  kms_key_id        = var.kms_key_arn
+
+  tags = merge(
+    local.tags,
+    {
+      Name        = "/aws/rds/cluster/${local.cluster_name}/${each.value}"
+      LogType     = each.value
+      Environment = var.environment
+    }
+  )
+}
+
 # Aurora Serverless v2 Instance
 resource "aws_rds_cluster_instance" "this" {
   count = var.instance_count
@@ -72,9 +96,12 @@ resource "aws_rds_cluster_instance" "this" {
   engine             = aws_rds_cluster.this.engine
   engine_version     = aws_rds_cluster.this.engine_version
 
-  # Performance Insights
+  # Performance Insights (enabled by default for enhanced monitoring)
   performance_insights_enabled    = var.enable_performance_insights
   performance_insights_kms_key_id = var.enable_performance_insights ? var.kms_key_arn : null
+
+  # Auto minor version upgrades (enabled by default for security patches)
+  auto_minor_version_upgrade = var.auto_minor_version_upgrade
 
   # Monitoring
   monitoring_interval = var.monitoring_interval
